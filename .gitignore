@@ -1,0 +1,5 @@
+# General
+.DS_Store
+
+# Ignore SAM build folder
+.aws-sam/

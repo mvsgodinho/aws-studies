@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+     - "80:80"
+    logging: 
+      driver: "awslogs"
+      options: 
+        awslogs-group: "ecs-cluster-LogGroup-1QLR7J8J9IAMN"
+        awslogs-region: "sa-east-1"
