@@ -124,7 +124,8 @@ Conditions:
 Resources:
   Cluster:
     Type: 'AWS::ECS::Cluster'
-    Properties: {}
+    Properties:
+      ClusterName: !Ref 'AWS::StackName'
   RecordSet:
     Condition: HasZone
     Type: 'AWS::Route53::RecordSet'
@@ -182,6 +183,7 @@ Resources:
   LoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
+      Name: !Sub '${AWS::StackName}-lb'
       IpAddressType: 'ipv4'
       LoadBalancerAttributes:
       - Key: 'idle_timeout.timeout_seconds'
@@ -273,6 +275,7 @@ Resources:
   TargetGroup:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
     Properties:
+      Name: !Sub '${AWS::StackName}-lb-tg'
       HealthCheckIntervalSeconds: 15
       HealthCheckPath: '/'
       HealthCheckProtocol: HTTP
@@ -351,7 +354,7 @@ Outputs:
     Export:
       Name: !Sub '${AWS::StackName}-LoadBalancerFullName'
   LoadBalancerSecurityGroup:
-    Description: 'The Security Group of the Load Balancer.'
+    Description: 'ALB Security Group.'
     Value: !Ref LoadBalancerSecurityGroup
     Export:
       Name: !Sub '${AWS::StackName}-LoadBalancerSecurityGroup'
@@ -366,7 +369,7 @@ Outputs:
     Value: !Ref HttpsListener
     Export:
       Name: !Sub '${AWS::StackName}-HttpsListener'
-  TargetGroup:
+  LoadBalancerTargetGroup:
     Description: 'ALB Target Group.'
     Value: !Ref TargetGroup
     Export:

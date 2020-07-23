@@ -17,12 +17,12 @@ Use [this stack](./stack/ecs-fargate.yaml) to create a Cluster and an ALB.
 
 ## Configure ecs-cli
 
-Export the Cluster name from your stack:
+Configure your with your cluster and region:
 
 ```bash
-export ECS_STACK_NAME=ecs-fargate
-export ECS_CLUSTER_NAME=$(aws cloudformation describe-stacks --stack-name $ECS_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='Cluster'].OutputValue" --output text)
+ecs-cli configure --cluster $ECS_CLUSTER_NAME --region $AWS_REGION --default-launch-type FARGATE
 ```
+The cluster name is created with the same name of your CloudFormation stack.
 
 Export region from AWS CLI configuration:
 
@@ -30,18 +30,13 @@ Export region from AWS CLI configuration:
 export AWS_REGION=$(aws configure get region)
 ```
 
-Configure your with your cluster and region:
-
-```bash
-ecs-cli configure --cluster $ECS_CLUSTER_NAME --region $AWS_REGION --default-launch-type FARGATE
-```
-
 ## Export ecs-params.yml env variables
 
-Exporting variables from stack:
+Exporting variables from stack. Example:
 
 ```bash
 export VPC_STACK_NAME=ecs-vpc
+export ECS_STACK_NAME=ecs-fargate
 
 export SUBNET_A=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='SubnetAPublic'].OutputValue" --output text)
 
@@ -49,7 +44,7 @@ export SUBNET_B=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAM
 
 export LB_SECURITY_GROUP=$(aws cloudformation describe-stacks --stack-name $ECS_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='LoadBalancerSecurityGroup'].OutputValue" --output text)
 
-export LB_TARGET_GROUP=$(aws cloudformation describe-stacks --stack-name $ECS_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='TargetGroup'].OutputValue" --output text)
+export LB_TARGET_GROUP=$(aws cloudformation describe-stacks --stack-name $ECS_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='LoadBalancerTargetGroup'].OutputValue" --output text)
 ```
 
 ## Create and run a service
