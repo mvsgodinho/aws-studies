@@ -15,14 +15,26 @@ Use [this stack](./stack/vpc-2azs.yaml) to create a VPC.
 
 Use [this stack](./stack/ecs-fargate.yaml) to create a Cluster and an ALB.
 
-## Configure ecs-cli
-
-Configure your with your cluster and region:
+Using CLI:
 
 ```bash
-ecs-cli configure --cluster $ECS_CLUSTER_NAME --region $AWS_REGION --default-launch-type FARGATE
+export ECS_STACK_NAME=ecs-fargate
+export VPC_STACK_NAME=ecs-vpc
+aws cloudformation create-stack \
+--stack-name $ECS_STACK_NAME \
+--capabilities CAPABILITY_NAMED_IAM \
+--template-body file://$(realpath ./stacks/ecs-fargate.yml) \
+--parameters ParameterKey=ParentVPCStack,ParameterValue=$VPC_STACK_NAME
 ```
+
+## Configure ecs-cli
+
+Configure your with your cluster and region.
 The cluster name is created with the same name of your CloudFormation stack.
+
+```bash
+export ECS_CLUSTER_NAME=$ECS_STACK_NAME
+```
 
 Export region from AWS CLI configuration:
 
@@ -30,14 +42,17 @@ Export region from AWS CLI configuration:
 export AWS_REGION=$(aws configure get region)
 ```
 
+Configure:
+
+```bash
+ecs-cli configure --cluster $ECS_CLUSTER_NAME --region $AWS_REGION --default-launch-type FARGATE
+```
+
 ## Export ecs-params.yml env variables
 
 Exporting variables from stack. Example:
 
 ```bash
-export VPC_STACK_NAME=ecs-vpc
-export ECS_STACK_NAME=ecs-fargate
-
 export SUBNET_A=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='SubnetAPublic'].OutputValue" --output text)
 
 export SUBNET_B=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='SubnetBPublic'].OutputValue" --output text)
