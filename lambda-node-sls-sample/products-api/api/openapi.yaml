@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  description: Products API
+  title: Products API
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: Product
+paths:
+  /products:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findProductsByStatus
+      parameters:
+      - description: Status filter
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          items:
+            default: available
+            enum:
+            - available
+            - pending
+            - sold
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Product'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid request
+      summary: Finds Products
+      tags:
+      - Product
+      x-eov-operation-handler: controllers/ProductController
+    post:
+      operationId: addProduct
+      requestBody:
+        $ref: '#/components/requestBodies/Product'
+      responses:
+        "405":
+          description: Invalid input
+      summary: Add a new product to the store
+      tags:
+      - Product
+      x-eov-operation-handler: controllers/ProductController
+components:
+  requestBodies:
+    Product:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+      description: Product object that needs to be added to the store
+      required: true
+  schemas:
+    Category:
+      example:
+        name: name
+        id: 6
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      type: object
+    Tag:
+      example:
+        name: name
+        id: 1
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      type: object
+    Product:
+      example:
+        photoUrls:
+        - photoUrls
+        - photoUrls
+        name: name
+        id: 0
+        category:
+          name: name
+          id: 6
+        tags:
+        - name: name
+          id: 1
+        - name: name
+          id: 1
+        status: available
+      properties:
+        id:
+          format: int64
+          type: integer
+        category:
+          $ref: '#/components/schemas/Category'
+        name:
+          type: string
+        photoUrls:
+          items:
+            type: string
+          type: array
+        tags:
+          items:
+            $ref: '#/components/schemas/Tag'
+          type: array
+        status:
+          description: product status in the store
+          enum:
+          - available
+          - pending
+          - sold
+          type: string
+      required:
+      - name
+      type: object

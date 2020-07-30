@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info:
+  description: "Products API"
+  version: 1.0.0
+  title: Products API
+tags:
+  - name: Product 
+paths:
+  /products:
+    post:
+      tags:
+        - Product
+      summary: Add a new product to the store
+      description: ""
+      operationId: addProduct
+      requestBody:
+        $ref: "#/components/requestBodies/Product"
+      responses:
+        "405":
+          description: Invalid input
+    get:
+      tags:
+        - Product
+      summary: Finds Products
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findProductsByStatus
+      parameters:
+        - name: status
+          in: query
+          description: Status filter
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - available
+                - pending
+                - sold
+              default: available
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "400":
+          description: Invalid request
+            
+components:
+  requestBodies:
+    Product:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Product"
+      description: Product object that needs to be added to the store
+      required: true
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Product:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        category:
+          $ref: "#/components/schemas/Category"
+        name:
+          type: string
+        photoUrls:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        status:
+          type: string
+          description: product status in the store
+          enum:
+            - available
+            - pending
+            - sold
