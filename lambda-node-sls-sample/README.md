@@ -62,8 +62,6 @@ npm install --save serverless-http
 ```
 ### Copy Serverless files
 
- - (../)
-
 ```bash
 cp ../sls-convert/* .
 ```
