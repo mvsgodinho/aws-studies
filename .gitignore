@@ -1,5 +1,16 @@
 # General
 .DS_Store
+admin.env
+.env
 
 # Ignore SAM build folder
 .aws-sam/
+
+# SERVERLESS STUFF
+_meta
+.serverless
+
+# Node.js
+node_modules
+build
+npm-debug.log
