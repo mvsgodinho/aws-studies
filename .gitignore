@@ -10,6 +10,9 @@ admin.env
 _meta
 .serverless
 
+# Open API Gen
+.openapi-generator
+
 # Node.js
 node_modules
 build
